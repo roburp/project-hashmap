@@ -2,13 +2,14 @@ class hashMap {
   constructor() {
     this.capacity = 16;
     this.loadFactor = 0.75;
-    this.buckets = [];
 
+    this.buckets = Array.from(new Array(this.capacity), () => []);
     // functionally the same as the for-loop
-    //this.buckets = Array.from(new Array(this.capacity), () => []);
+    /* 
     for (let i = 0; i < this.capacity; i++) {
       this.buckets.push([]);
     }
+      */
   }
 
   hash(key) {
@@ -56,17 +57,47 @@ class hashMap {
 
   // takes a key as an argument. If the given key is in the hash map, it should remove the entry with that key then return true.
   // If the key isn’t in the hash map, it should return false.
-  remove(key) {}
+  remove(key) {
+    let index = this.hash(key);
+    let bucket = this.buckets[index];
+
+    const pairIndex = bucket.findIndex((pair) => pair[0] === key);
+
+    if (pairIndex !== -1) {
+      bucket.splice(pairIndex, 1);
+      return true;
+    } else return false;
+  }
+
+  // returns the number of stored keys in the hash map.
+  length() {
+    return this.buckets.reduce((total, bucket) => total + bucket.length, 0);
+  }
+  // removes
+  //  all entries in the hash map.
+  clear() {
+    this.buckets = Array.from(new Array(this.capacity), () => []);
+  }
+
+  // returns an array containing all the keys (not values) inside the hash map.
+  keys() {
+    return this.buckets.flat().map((pair) => pair[0]);
+    /*
+    let keys = [];
+    for (const bucket of this.buckets) {
+      let i = 0;
+      while (bucket[i]) {
+        keys.push(bucket[i][0]);
+        i++;
+      }
+    }
+    return keys;
+    */
+  }
 }
 /*
 
 implementing this particular behavior until later.
-
-has(key) takes a key as an argument and returns a boolean based on whether or not the key is in the hash map.
-
-remove(key) takes a key as an argument. If the given key is in the hash map, it should remove the entry with that key then return true. If the key isn’t in the hash map, it should return false.
-
-length() returns the number of stored keys in the hash map.
 
 clear() removes all entries in the hash map.
 
