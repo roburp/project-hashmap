@@ -94,16 +94,20 @@ class hashMap {
     return keys;
     */
   }
+
+  // returns an array containing all the values (not keys) inside the hash map.
+  values() {
+    return this.buckets.flat().map((pair) => pair[1]);
+  }
+
+  //returns an array that contains each key-value pair in their own arrays
+  entries() {
+    return this.buckets.flat();
+  }
 }
 /*
 
 implementing this particular behavior until later.
-
-clear() removes all entries in the hash map.
-
-keys() returns an array containing all the keys (not values) inside the hash map.
-
-values() returns an array containing all the values (not keys) inside the hash map.
 
 entries() returns an array that contains each key-value pair in their own arrays, for example: [[firstKey, firstValue], [secondKey, secondValue]].
 
