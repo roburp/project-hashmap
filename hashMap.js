@@ -1,4 +1,4 @@
-class hashMap {
+export class HashMap {
   constructor() {
     this.capacity = 16;
     this.loadFactor = 0.75;
@@ -17,7 +17,7 @@ class hashMap {
 
     const primeNumber = 31;
     for (let i = 0; i < key.length; i++) {
-      hashCode = primeNumber * hashCode + (key.charCodeAt(i) % this.capacity);
+      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
     }
     return hashCode;
   }
@@ -26,6 +26,10 @@ class hashMap {
   // If the key already exists in the hash map, then the old value associated with it should be overwritten by the new one.
   set(key, value) {
     let index = this.hash(key);
+    if (index < 0 || index >= this.buckets.length) {
+      throw new Error("Trying to access index out of bounds");
+    }
+
     let bucket = this.buckets[index];
 
     const pair = bucket.find((pair) => pair[0] === key);
@@ -35,7 +39,10 @@ class hashMap {
     } else {
       bucket.push([key, value]);
     }
-    //...........
+
+    if (this.length() > this.capacity * this.loadFactor) {
+      this.resize();
+    }
   }
 
   // takes a key as an argument and returns the value that is associated with it. If the key is not found, return undefined.
@@ -104,16 +111,13 @@ class hashMap {
   entries() {
     return this.buckets.flat();
   }
+
+  resize() {
+    const oldEntries = this.entries();
+
+    this.capacity *= 2;
+    this.buckets = Array.from(new Array(this.capacity), () => []);
+
+    oldEntries.forEach((pair) => this.set(pair[0], pair[1]));
+  }
 }
-/*
-
-implementing this particular behavior until later.
-
-entries() returns an array that contains each key-value pair in their own arrays, for example: [[firstKey, firstValue], [secondKey, secondValue]].
-
-
-// Use the following snippet whenever you access a bucket through an index. We want to throw an error if we try to access an out-of-bounds index:
-if (index < 0 || index >= buckets.length) {
-  throw new Error("Trying to access index out of bounds");
-}
-  */
